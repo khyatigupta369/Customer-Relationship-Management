@@ -44,11 +44,11 @@
 				</tr>
 				{%for order in orders%}
 				<tr>
-					<td>{{order.product.name}}</td>
+					<td>{{order.product}}</td>
 					<td>{{order.date_created}}</td>
 					<td>{{order.status}}</td>
-					<td><a href="#">Update</a></td>
-					<td><a href="#">Delete</a></td>
+					<td><a class = "btn btn-sm btn-info" href="#">Update</a></td>
+					<td><a class = "btn btn-sm btn-danger" href="#">Delete</a></td>
 				</tr>
 				{%endfor %}
 			</table>

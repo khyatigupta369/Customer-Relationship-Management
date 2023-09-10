@@ -23,8 +23,18 @@ def home(request):
     }
     return render(request, 'accounts/dashboard.html', context)
 
-def customer(request):
-    return render(request, 'accounts/customer.html')
+# primary key - pk same as that in the dynamic accounts/urls.py route
+def customer(request, pk):
+    customer = Customer.objects.get(id = pk)
+    orders = customer.order_set.all()
+    total_orders = orders.count()
+    context = { 
+        'customer' : customer,
+        'total_orders' : total_orders,
+        'orders' : orders
+    }
+
+    return render(request, 'accounts/customer.html', context)
 
 def products(request):
     products = Product.objects.all()

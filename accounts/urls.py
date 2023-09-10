@@ -6,7 +6,7 @@ from . import views
 # url patters 'customer/' is correct and '/customer' is wrong
 # link name followed by slash
 urlpatterns = [
-    path('', views.home),
-    path('customer/', views.customer),
-    path('products/', views.products),
+    path('', views.home, name = 'home'),
+    path('products/', views.products, name = 'products'),
+    path('customer/<str:pk>/', views.customer, name = 'customer'),
 ]
