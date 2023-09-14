@@ -1,12 +1,12 @@
 from django.shortcuts import render, redirect
 from .models import *
 from .forms import OrderForm
+from django.forms import inlineformset_factory
+from .forms import OrderForm
+
 # Create your views here.
 def home(request):
     orders = Order.objects.all()
-
-    
-
     total_orders = orders.count()
     delivered = orders.filter(status = 'Delivered').count()
     pending = orders.filter(status = 'Pending').count()
@@ -45,20 +45,29 @@ def products(request):
     return render(request, 'accounts/products.html', context)
 
 
-def createOrder(request):
+def createOrder(request, pk):
 
-    form = OrderForm()
+    # Customer = parent, Order = child, there can be many child orders for a customer. 
+    # extra means the number of forms to pass
+    OrderFormSet = inlineformset_factory(Customer, Order, fields=('product', 'status'), extra = 5)
+    customer = Customer.objects.get(id=pk)
+
+    # form = OrderForm(initial={'customer' : customer})
+    # this allows for multiple forms inside a single form.
+    # queryset - only unfilled forms show up
+    formset = OrderFormSet(queryset=Order.objects.none(), instance=customer)
+
     # action = "" means send the data in the form through post method to the same url
     if(request.method == 'POST'):
         # print('Printing the Form data: ' + request.POST)
         # if the received data matched the model form type, and the form is valid, then save it to database
-        form = OrderForm(request.POST)
-        if form.is_valid():
-            form.save()
+        formset = OrderFormSet(request.POST, instance=customer)
+        if formset.is_valid():
+            formset.save()
             return redirect('/')
 
     context = {
-        'form' : form
+        'formset' : formset
     }
     return render(request, 'accounts/order_form.html', context)
 
